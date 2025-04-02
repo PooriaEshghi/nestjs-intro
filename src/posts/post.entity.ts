@@ -64,16 +64,8 @@ export class Post {
     })
     publishOn?: Date;
     
-    @Column({
-        type: 'varchar',
-        length: 96,
-        nullable: false,
-    })
+  
     tags?: string;
-    @Column({
-        type: 'varchar',
-        length: 96,
-        nullable: false,
-    })
+   
     metaOptions?: CreatePostMetaOptionsDto[];
 }

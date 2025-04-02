@@ -4,7 +4,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
 
-@Controller('/posts')
+@Controller('posts')
 @ApiTags('Posts')
 export class PostsController {
     constructor(private readonly postsService: PostsService){}
