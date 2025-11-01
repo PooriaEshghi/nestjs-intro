@@ -1,60 +1,57 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import { create } from "domain";
+import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column } from "typeorm";
 
 @Entity()
 export class Tag {
+    
+    
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Column({
         type: 'varchar',
         length: 256,
         nullable: false,
-        unique: true,
+        unique:true
     })
     name: string;
 
     @Column({
         type: 'varchar',
-        length: 512,
+        length: 256,
         nullable: false,
-        unique: true,
+        unique:true
     })
     slug: string;
 
     @Column({
         type: 'text',
-        nullable: true,
+        nullable: true
     })
     description: string;
 
     @Column({
-        type: 'text',
-        nullable: true,
+        type: 'json',
+        nullable: true
     })
     schema: string;
 
     @Column({
         type: 'varchar',
         length: 1024,
-        nullable: true,
+        nullable: true
     })
     featuredImage: string;
 
-    // https://orkhan.gitbook.io/typeorm/docs/decorator-reference
     @CreateDateColumn()
     createDate: Date;
 
     @UpdateDateColumn()
     updateDate: Date;
 
-    // Add this decorartor and column enables soft delete
     @DeleteDateColumn()
     deletedAt: Date;
 }
+
+
