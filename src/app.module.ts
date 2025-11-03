@@ -16,6 +16,8 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
     PostsModule,
     AuthModule,
     TypeOrmModule.forRootAsync({
+      imports: [],
+      inject: [],
       useFactory: () => ({
         type: 'postgres',
         entities: [User],

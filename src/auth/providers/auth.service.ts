@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/providers/users.service';
 export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {}
 
   public login(email: string, password: string, id: string) {
