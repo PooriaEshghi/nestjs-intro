@@ -1,16 +1,13 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { CreatePostMetaOptionsDto } from '../meta-options/dtos/create-post-meta-options.dto';
-import { PostStatus } from './enums/postStatus.enum';
-<<<<<<< HEAD
-import { CreatePostMetaOptionsDto } from '../meta-options/dtos/create-post-meta-options.dto';
-=======
-import { PostType } from './enums/postType.enum';
->>>>>>> d4ae539aef6d8a931221094f94fdc5d456fd70dd
+import { postStatus } from './enums/postStatus.enum';
+import { postType } from './enums/postType.enum';
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({
     type: 'varchar',
@@ -21,11 +18,11 @@ export class Post {
 
   @Column({
     type: 'enum',
-    enum: PostType,
+    enum: postType,
     nullable: false,
-    default: PostType.POST,
+    default: postType.POST,
   })
-  postType: PostType;
+  postType: postType;
 
   @Column({
     type: 'varchar',
@@ -37,15 +34,15 @@ export class Post {
 
   @Column({
     type: 'enum',
-    enum: PostStatus,
+    enum: postStatus,
     nullable: false,
-    default: PostStatus.DRAFT,
+    default: postStatus.DRAFT,
   })
-  status: PostStatus;
+  status: postStatus;
 
   @Column({
     type: 'text',
-    nullable: false,
+    nullable: true,
   })
   content?: string;
 
@@ -60,15 +57,15 @@ export class Post {
     length: 1024,
     nullable: true,
   })
-  featureImageUrl?: string;
+  featuredImageUrl?: string;
 
   @Column({
-    type: 'timestamp',
+    type: 'timestamp', // 'datetime' in mysql
     nullable: true,
   })
   publishOn?: Date;
 
-  tags?: string;
-
+  // Work on these in lecture on relationships
+  tags?: string[];
   metaOptions?: CreatePostMetaOptionsDto[];
 }

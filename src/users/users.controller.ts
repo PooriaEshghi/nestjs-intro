@@ -48,8 +48,8 @@ export class UsersController {
   })
   getUsers(
     @Param() getUserParamDto: GetUsersParamDto,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit?: number,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
   ) {
     return this.userService.findAll(getUserParamDto, limit, page);
     // return this.userService.findAll(getUserParamDto.id as string);
