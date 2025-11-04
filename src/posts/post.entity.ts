@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { CreatePostMetaOptionsDto } from '../meta-options/dtos/create-post-meta-options.dto';
+import { MetaOption } from 'src/meta-options/meta-options.entity';
 import { postStatus } from './enums/postStatus.enum';
 import { postType } from './enums/postType.enum';
 
@@ -59,13 +66,16 @@ export class Post {
   })
   featuredImageUrl?: string;
 
-  @Column({
-    type: 'timestamp', // 'datetime' in mysql
-    nullable: true,
+  @Column({ type: 'timestamptz', nullable: true })
+publishOn?: Date | null;
+
+
+  @OneToOne(() => MetaOption,(metaOptions) => metaOptions.post, { 
+    eager: true 
   })
-  publishOn?: Date;
+  @JoinColumn()
+  metaOptions?: MetaOption;
 
   // Work on these in lecture on relationships
   tags?: string[];
-  metaOptions?: CreatePostMetaOptionsDto[];
 }

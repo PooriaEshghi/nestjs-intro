@@ -2,10 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
@@ -96,3 +93,173 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+
+
+{
+
+  "name": "nestjs-intro",
+
+  "version": "0.0.1",
+
+  "description": "",
+
+  "author": "",
+
+  "private": true,
+
+  "license": "UNLICENSED",
+
+  "scripts": {
+
+    "build": "nest build",
+
+    "format": "prettier --write\"src/**/*.ts\"\"test/**/*.ts\"",
+
+    "start": "nest start",
+
+    "start:dev": "nest start --watch",
+
+    "start:debug": "nest start --debug --watch",
+
+    "start:prod": "node dist/main",
+
+    "lint": "eslint\"{src,apps,libs,test}/**/*.ts\" --fix",
+
+    "test": "jest",
+
+    "test:watch": "jest --watch",
+
+    "test:cov": "jest --coverage",
+
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+
+    "doc": "npx @compodoc/compodoc -p tsconfig.json -s --port 3001 --watch -d ./documentation"
+
+  },
+
+  "dependencies": {
+
+    "@compodoc/compodoc": "^1.1.26",
+
+    "@nestjs/common": "^11.1.8",
+
+    "@nestjs/core": "^11.1.8",
+
+    "@nestjs/mapped-types": "^2.1.0",
+
+    "@nestjs/platform-express": "^11.1.8",
+
+    "@nestjs/swagger": "^11.0.7",
+
+    "@nestjs/typeorm": "^11.0.0",
+
+    "class-transformer": "^0.5.1",
+
+    "class-validator": "^0.14.1",
+
+    "pg": "^8.14.1",
+
+    "reflect-metadata": "^0.2.2",
+
+    "rxjs": "^7.8.2",
+
+    "typeorm": "^0.3.21"
+
+  },
+
+  "devDependencies": {
+
+    "@eslint/eslintrc": "^3.2.0",
+
+    "@eslint/js": "^9.18.0",
+
+    "@nestjs/cli": "^11.0.0",
+
+    "@nestjs/schematics": "^11.0.0",
+
+    "@nestjs/testing": "^11.0.1",
+
+    "@swc/cli": "^0.6.0",
+
+    "@swc/core": "^1.10.7",
+
+    "@types/express": "^5.0.0",
+
+    "@types/jest": "^29.5.14",
+
+    "@types/node": "^22.19.0",
+
+    "@types/supertest": "^6.0.2",
+
+    "eslint": "^9.18.0",
+
+    "eslint-config-prettier": "^10.0.1",
+
+    "eslint-plugin-prettier": "^5.2.2",
+
+    "globals": "^16.0.0",
+
+    "jest": "^29.7.0",
+
+    "prettier": "^3.4.2",
+
+    "source-map-support": "^0.5.21",
+
+    "supertest": "^7.0.0",
+
+    "ts-jest": "^29.2.5",
+
+    "ts-loader": "^9.5.2",
+
+    "ts-node": "^10.9.2",
+
+    "tsconfig-paths": "^4.2.0",
+
+    "typescript": "5.6",
+
+    "typescript-eslint": "^8.20.0"
+
+  },
+
+  "jest": {
+
+    "moduleFileExtensions": [
+
+    "js",
+
+    "json",
+
+    "ts"
+
+    ],
+
+    "rootDir": "src",
+
+    "testRegex": ".*\\.spec\\.ts$",
+
+    "transform": {
+
+    "^.+\\.(t|j)s$": "ts-jest"
+
+    },
+
+    "collectCoverageFrom": [
+
+    "**/*.(t|j)s"
+
+    ],
+
+    "coverageDirectory": "../coverage",
+
+    "testEnvironment": "node"
+
+  }
+
+}
+
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest

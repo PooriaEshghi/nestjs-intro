@@ -94,8 +94,9 @@ export class CreatePostDto {
     example: '2024-03-16T07:46:32+0000',
   })
   @IsISO8601()
-  @IsOptional()
-  publishOn?: Date;
+@IsOptional()
+publishOn?: string;
+
 
   @ApiPropertyOptional({
     description: 'Array of tags passed as string values',
@@ -108,28 +109,11 @@ export class CreatePostDto {
   tags?: string[];
 
   @ApiPropertyOptional({
-    type: 'array',
-    required: false,
-    items: {
-      type: 'object',
-      properties: {
-        key: {
-          type: 'string',
-          description:
-            'The key can be any string identifier for your meta option',
-          example: 'sidebarEnabled',
-        },
-        value: {
-          type: 'any',
-          description: 'Any value that you want to save to the key',
-          example: true,
-        },
-      },
-    },
+    description: 'Meta options for the post',
+    type: () => CreatePostMetaOptionsDto,
   })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto[];
+  metaOptions?: CreatePostMetaOptionsDto | null;
 }

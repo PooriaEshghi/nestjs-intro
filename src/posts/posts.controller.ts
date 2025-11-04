@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { PostsService } from './providers/posts.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
 
@@ -9,23 +9,42 @@ import { PatchPostDto } from './dtos/patch-post.dto';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('/:userId')
-  public getPosts(@Param('userId') userId: string) {
-    return this.postsService.finedUserById(userId);
+  // 1) Due route esplicite (niente '?')
+  @Get()
+  @ApiOperation({ summary: 'Lista posts (tutti o filtrati via query ?userId=)' })
+  @ApiQuery({ name: 'userId', required: false })
+  getPosts(@Query('userId') userId: string) {
+    return this.postsService.findAll(userId);
   }
 
-  @ApiResponse({
-    status: 201,
-    description: 'You get a 201 response if your post is created successfully',
-  })
-  @Post()
-  public createPost(@Body() createPostDto: CreatePostDto) {
-    console.log(createPostDto);
+  @Get(':userId')
+  @ApiOperation({ summary: 'Lista posts di un utente' })
+  @ApiParam({ name: 'userId' })
+  getPostsByUser(@Param('userId') userId: string) {
+    return this.postsService.findAll(userId);
   }
-  @ApiResponse({
-    status: 200,
-    description: 'A 200 response if the post is updated successfully',
-  })
-  @Patch()
-  public modifyPost(@Body() patchPostDto: PatchPostDto) {}
+
+  @ApiOperation({ summary: 'Creates a new blog post' })
+  @ApiResponse({ status: 201, description: 'Post creato' })
+  @Post()
+  createPost(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(createPostDto);
+  }
+
+   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a post by id' })
+  @ApiResponse({ status: 200, description: 'Post deleted' })
+  deletePost(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.delete(id);
+  }
+
+
+  // Consiglio: PATCH va quasi sempre con un id
+  // @ApiOperation({ summary: 'Updates an existing blog post' })
+  // @ApiResponse({ status: 200, description: 'Post aggiornato' })
+  // @Patch(':id')
+  // @ApiParam({ name: 'id' })
+  // updatePost(@Param('id') id: string, @Body() patchPostsDto: PatchPostDto) {
+  //   return this.postsService.update(id, patchPostsDto);
+  // }
 }
