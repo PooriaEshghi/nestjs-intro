@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { AuthService } from 'src/auth/providers/auth.service';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Controller class for '/users' API endpoint
@@ -27,6 +28,8 @@ export class UsersService {
     // Injecting Auth Service
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+
+    private readonly configService: ConfigService,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -56,6 +59,11 @@ export class UsersService {
     limt: number,
     page: number,
   ) {
+
+    const environment = this.configService.get('NODE_ENV')
+    console.log(environment);
+    console.log(environment);
+    
     return [
       {
         firstName: 'John',
@@ -71,7 +79,7 @@ export class UsersService {
   /**
    * Public method used to find one user using the ID of the user
    */
-  public findOneById(id: string) {
+  public findOneById(id: number) {
     return {
       id: 1234,
       firstName: 'Alice',
