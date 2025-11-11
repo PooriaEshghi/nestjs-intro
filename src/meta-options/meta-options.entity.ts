@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { Post } from 'src/posts/post.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class MetaOption {
@@ -28,9 +29,7 @@ export class MetaOption {
   @UpdateDateColumn()
   updateDate: Date;
 
-  @OneToOne(() => Post, (post) => post.metaOptions, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  post: Post;
+  @OneToOne(() => Post, p => p.metaOptions, { eager:false, onDelete:'CASCADE' })
+@Exclude() post: Post;
+
 }
