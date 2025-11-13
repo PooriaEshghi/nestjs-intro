@@ -5,37 +5,42 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsController } from './meta-options/meta-options.controller';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
+import * as Joi from 'joi';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+import environmentValidation from './config/environment.validation';
 
-const ENV = process.env.NODE_ENV;
-
+const ENV = process.env.NODE_ENV ?? 'development';
 
 @Module({
   imports: [
     UsersModule,
     PostsModule,
     AuthModule,
-     ConfigModule.forRoot({
+    ConfigModule.forRoot({
       isGlobal: true,
-      // envFilePath: ['.env.development']
-      envFilePath: !ENV ? '.env' : `.env.${ENV}`
+      // envFilePath: [`.env.${ENV}`, '.env'],
+      envFilePath: [!ENV ? '.env' : `.env.${ENV}`],
+      load: [appConfig, databaseConfig],
+      validationSchema: environmentValidation,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [],
-      inject: [],
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        // entities: [User],
-        autoLoadEntities: true,
-        synchronize: true,
-        port: 5432,
-        username: 'postgres',
-        password: 'pooria84',
-        host: 'localhost',
-        database: 'nestjs-blog',
+        //entities: [User],
+        synchronize: configService.get('database.synchronize'),
+        port: configService.get('database.port'),
+        username: configService.get('database.user'),
+        password: configService.get('database.password'),
+        host: configService.get('database.host'),
+        autoLoadEntities: configService.get('database.autoLoadEntities'),
+        database: configService.get('database.name'),
       }),
     }),
     TagsModule,
