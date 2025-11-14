@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from '../post.entity';
@@ -17,6 +17,7 @@ export class PostsService {
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
     @InjectRepository(MetaOption) private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
+
 
   public async create(dto: CreatePostDto) {
     // 1) Risolvi relazioni
