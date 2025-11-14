@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from '../post.entity';
@@ -15,7 +20,7 @@ export class PostsService {
     private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
-    @InjectRepository(MetaOption) private readonly metaOptionsRepository: Repository<MetaOption>,
+    @InjectRepository(MetaOption) private readonly metaOptionsRepository: Repository<MetaOption>
   ) {}
 
   public async create(dto: CreatePostDto) {
@@ -26,7 +31,8 @@ export class PostsService {
     let tags: Tag[] = [];
     if (dto.tags?.length) {
       tags = await this.tagsService.findMultipleTags(dto.tags);
-      if (tags.length !== dto.tags.length) throw new BadRequestException('One or more tags not found');
+      if (tags.length !== dto.tags.length)
+        throw new BadRequestException('One or more tags not found');
     }
 
     // 2) Crea Post (niente spread cieco)
@@ -55,12 +61,11 @@ export class PostsService {
     return saved;
   }
 
-    public async findAll() {
-    // find all posts
+  public async findAll(userId: string) {
     let posts = await this.postsRepository.find({
       relations: {
         metaOptions: true,
-        author: true,
+        //author: true,
         // tags: true,
       },
     });
@@ -68,47 +73,66 @@ export class PostsService {
     return posts;
   }
 
-  public async update(dto: PatchPostDto) {
-    const existing = await this.postsRepository.findOne({ where: { id: dto.id }, relations: { metaOptions: true, tags: true, author: true } });
-    if (!existing) throw new NotFoundException('Post not found');
+  public async update(patchPostDto: PatchPostDto) {
+    let tags: Tag[] | null = null;
+    let post: Post | null = null;
 
-    // aggiorna solo i campi presenti (stessa maniera: semplice e chiaro)
-    if (dto.title !== undefined) existing.title = dto.title;
-    if (dto.postType !== undefined) existing.postType = dto.postType;
-    if (dto.slug !== undefined) existing.slug = dto.slug;
-    if (dto.status !== undefined) existing.status = dto.status;
-    if (dto.content !== undefined) existing.content = dto.content;
-    if (dto.schema !== undefined) existing.schema = dto.schema;
-    if (dto.featuredImageUrl !== undefined) existing.featuredImageUrl = dto.featuredImageUrl;
-    if (dto.publishOn !== undefined) existing.publishOn = dto.publishOn ? new Date(dto.publishOn) : undefined;
-
-    if (dto.authorId !== undefined) {
-      const author = await this.usersService.findOneById(dto.authorId);
-      if (!author) throw new NotFoundException('Author not found');
-      
-      existing.author = existing.author ?? author;
+    if (!patchPostDto.tags || !patchPostDto.tags.length) {
+      throw new BadRequestException('Please provide at least one tag id');
+    }
+    try {
+      tags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request at the moment please try later',
+        {
+          description: 'Error connecting to the database',
+        }
+      );
     }
 
-    if (dto.tags !== undefined) {
-      const tags = dto.tags.length ? await this.tagsService.findMultipleTags(dto.tags) : [];
-      if (dto.tags.length && tags.length !== dto.tags.length) throw new BadRequestException('One or more tags not found');
-      existing.tags = tags;
+    if (!tags || tags.length !== patchPostDto.tags.length) {
+      throw new BadRequestException('Please check your tag Ids and ensure they are correct');
     }
 
-    if (dto.metaOptions !== undefined) {
-      if (dto.metaOptions === null) {
-        existing.metaOptions = null as any; // se vuoi supportare rimozione meta
-      } else if (existing.metaOptions) {
-        Object.assign(existing.metaOptions, dto.metaOptions);
-        await this.metaOptionsRepository.save(existing.metaOptions);
-      } else {
-        const meta = this.metaOptionsRepository.create({ ...dto.metaOptions, post: existing });
-        await this.metaOptionsRepository.save(meta);
-        existing.metaOptions = meta;
-      }
+    try {
+      post = await this.postsRepository.findOneBy({
+        id: patchPostDto.id,
+      });
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request at the moment please try later',
+        {
+          description: 'Error connecting to the database',
+        }
+      );
     }
 
-    return this.postsRepository.save(existing);
+    if (!post) {
+      throw new BadRequestException('The post Id does not exist');
+    }
+
+    post.title = patchPostDto.title ?? post.title;
+    post.content = patchPostDto.content ?? post.content;
+    post.status = patchPostDto.status ?? post.status;
+    post.postType = patchPostDto.postType ?? post.postType;
+    post.slug = patchPostDto.slug ?? post.slug;
+    post.featuredImageUrl = patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
+    post.publishOn = patchPostDto.publishOn ?? post.publishOn;
+
+    post.tags = tags;
+
+    try {
+      await this.postsRepository.save(post);
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request at the moment please try later',
+        {
+          description: 'Error connecting to the database',
+        }
+      );
+    }
+    return post;
   }
 
   public async delete(id: number) {
