@@ -64,4 +64,9 @@ export class UsersController {
   public patchUser(@Body() patchUserDto: PatchUserDto) {
     return patchUserDto;
   }
+
+  @Get(':userId')
+  public getUser(@Param('userId', ParseIntPipe ) userId: number){
+    return this.userService.findOneById(userId);
+  }
 }

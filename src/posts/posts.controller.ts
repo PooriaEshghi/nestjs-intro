@@ -1,34 +1,59 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { PostsService } from './providers/posts.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
 
 @Controller('posts')
 @ApiTags('Posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    /*
+     *  Injecting Posts Service
+     */
+    private readonly postsService: PostsService,
+  ) {}
 
-  @Get()
-  getAll() { return this.postsService.findAll(); }
-
-  @Get(':userId')
-  getByUser(@Param('userId', ParseIntPipe) userId: number) {
-    return this.postsService.findAll();
+  /*
+   * GET localhost:3000/posts/:userId
+   */
+  @Get('/:userId?')
+  public getPosts(@Param('userId') userId: string) {
+    return this.postsService.findAll(userId);
   }
 
-  @ApiOperation({ summary: 'Create a new post' })
-  @ApiResponse({ status: 201, description: 'Created' })
+  @ApiOperation({
+    summary: 'Creates a new blog post',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'You get a 201 response if your post is created successfully',
+  })
   @Post()
-  public createPost(@Body() dto: CreatePostDto) {
-    return this.postsService.create(dto);
+  public createPost(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(createPostDto);
   }
 
-  @ApiOperation({ summary: 'Update an existing post' })
-  @ApiResponse({ status: 200, description: 'Updated' })
+  @ApiOperation({
+    summary: 'Updates an existing blog post',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A 200 response if the post is updated successfully',
+  })
   @Patch()
-  public updatePost(@Body() dto: PatchPostDto) {
-    return this.postsService.update(dto);
+  public updatePost(@Body() patchPostDto: PatchPostDto) {
+    return this.postsService.update(patchPostDto);
   }
 
   @Delete()
