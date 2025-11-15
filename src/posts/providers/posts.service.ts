@@ -56,7 +56,7 @@ export class PostsService {
     return saved;
   }
 
-    public async findAll() {
+    public async findAll(userId: string) {
     // find all posts
     let posts = await this.postsRepository.find({
       relations: {
