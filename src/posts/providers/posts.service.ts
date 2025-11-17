@@ -15,9 +15,8 @@ export class PostsService {
     private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
-    @InjectRepository(MetaOption) private readonly metaOptionsRepository: Repository<MetaOption>,
+    @InjectRepository(MetaOption) private readonly metaOptionsRepository: Repository<MetaOption>
   ) {}
-
 
   public async create(dto: CreatePostDto) {
     // 1) Risolvi relazioni
@@ -27,7 +26,8 @@ export class PostsService {
     let tags: Tag[] = [];
     if (dto.tags?.length) {
       tags = await this.tagsService.findMultipleTags(dto.tags);
-      if (tags.length !== dto.tags.length) throw new BadRequestException('One or more tags not found');
+      if (tags.length !== dto.tags.length)
+        throw new BadRequestException('One or more tags not found');
     }
 
     // 2) Crea Post (niente spread cieco)
@@ -56,12 +56,11 @@ export class PostsService {
     return saved;
   }
 
-    public async findAll() {
-    // find all posts
+  public async findAll(userId: string) {
     let posts = await this.postsRepository.find({
       relations: {
         metaOptions: true,
-        author: true,
+        //author: true,
         // tags: true,
       },
     });
@@ -70,7 +69,10 @@ export class PostsService {
   }
 
   public async update(dto: PatchPostDto) {
-    const existing = await this.postsRepository.findOne({ where: { id: dto.id }, relations: { metaOptions: true, tags: true, author: true } });
+    const existing = await this.postsRepository.findOne({
+      where: { id: dto.id },
+      relations: { metaOptions: true, tags: true, author: true },
+    });
     if (!existing) throw new NotFoundException('Post not found');
 
     // aggiorna solo i campi presenti (stessa maniera: semplice e chiaro)
@@ -81,18 +83,20 @@ export class PostsService {
     if (dto.content !== undefined) existing.content = dto.content;
     if (dto.schema !== undefined) existing.schema = dto.schema;
     if (dto.featuredImageUrl !== undefined) existing.featuredImageUrl = dto.featuredImageUrl;
-    if (dto.publishOn !== undefined) existing.publishOn = dto.publishOn ? new Date(dto.publishOn) : undefined;
+    if (dto.publishOn !== undefined)
+      existing.publishOn = dto.publishOn ? new Date(dto.publishOn) : undefined;
 
     if (dto.authorId !== undefined) {
       const author = await this.usersService.findOneById(dto.authorId);
       if (!author) throw new NotFoundException('Author not found');
-      
+
       existing.author = existing.author ?? author;
     }
 
     if (dto.tags !== undefined) {
       const tags = dto.tags.length ? await this.tagsService.findMultipleTags(dto.tags) : [];
-      if (dto.tags.length && tags.length !== dto.tags.length) throw new BadRequestException('One or more tags not found');
+      if (dto.tags.length && tags.length !== dto.tags.length)
+        throw new BadRequestException('One or more tags not found');
       existing.tags = tags;
     }
 
