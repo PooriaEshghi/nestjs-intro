@@ -18,18 +18,12 @@ import { PatchPostDto } from './dtos/patch-post.dto';
 @ApiTags('Posts')
 export class PostsController {
   constructor(
-    /*
-     *  Injecting Posts Service
-     */
     private readonly postsService: PostsService,
   ) {}
-
-  /*
-   * GET localhost:3000/posts/:userId
-   */
+  
   @Get('/:userId?')
   public getPosts(@Param('userId') userId: string) {
-    return this.postsService.findAll(userId);
+    return this.postsService.findAll();
   }
 
   @ApiOperation({
