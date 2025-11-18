@@ -4,7 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -21,7 +21,7 @@ export class MetaOption {
     type: 'json',
     nullable: false,
   })
-  metaValue: string;
+  metaValue: string; // meglio any/Record<string, any>, ma questo è un altro discorso
 
   @CreateDateColumn()
   createDate: Date;
@@ -29,7 +29,11 @@ export class MetaOption {
   @UpdateDateColumn()
   updateDate: Date;
 
-  @OneToOne(() => Post, p => p.metaOptions, { eager:false, onDelete:'CASCADE' })
-@Exclude() post: Post;
-
+  @ManyToOne(() => Post, (p) => p.metaOptions, {
+    onDelete: 'CASCADE',
+    eager: false,
+  })
+  @JoinColumn()          // QUI: questo lato ha la FK (es. postId)
+  @Exclude()
+  post: Post;
 }

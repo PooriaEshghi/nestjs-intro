@@ -4,6 +4,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -76,7 +77,7 @@ export class Post {
   })
   publishOn?: Date;
 
-  @OneToOne(() => MetaOption, (metaOptions) => metaOptions.post, {
+  @OneToMany(() => MetaOption, (metaOptions) => metaOptions.post, {
     cascade: true,
     eager: true,
   })
