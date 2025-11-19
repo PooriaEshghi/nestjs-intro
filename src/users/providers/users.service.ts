@@ -47,12 +47,8 @@ export class UsersService {
     ];
   }
 
-  public findOneById(id: number) {
-    return {
-      id: 1234,
-      firstName: 'Alice',
-      email: 'alice@doe.com',
-    };
+   async findOneById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
   }
 
   public async createMany(createManyUsersDto: CreateManyUsersDto) {
