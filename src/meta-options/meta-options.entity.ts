@@ -29,11 +29,11 @@ export class MetaOption {
   @UpdateDateColumn()
   updateDate: Date;
 
-  @ManyToOne(() => Post, (p) => p.metaOptions, {
-    onDelete: 'CASCADE',
-    eager: false,
-  })
-  @JoinColumn()          // QUI: questo lato ha la FK (es. postId)
-  @Exclude()
-  post: Post;
+ @ManyToOne(() => Post, (p) => p.metaOptions, {
+  eager: false,
+  onDelete: 'CASCADE',
+})
+@JoinColumn()      // lato owner: qui vive la FK postId
+post: Post;
+
 }

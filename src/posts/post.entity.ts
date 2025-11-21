@@ -72,16 +72,16 @@ export class Post {
   featuredImageUrl?: string;
 
   @Column({
-    type: 'timestamp', // 'datetime' in mysql
+    type: 'timestamp',
     nullable: true,
   })
   publishOn?: Date;
 
-  @OneToMany(() => MetaOption, (metaOptions) => metaOptions.post, {
+  @OneToMany(() => MetaOption, (meta) => meta.post, {
     cascade: true,
     eager: true,
   })
-  metaOptions?: MetaOption;
+  metaOptions?: MetaOption[]; // <-- DEVE essere array
 
   @ManyToOne(() => User, (user) => user.posts, {
     eager: true,
@@ -89,7 +89,7 @@ export class Post {
   author: User;
 
   @ManyToMany(() => Tag, (tag) => tag.posts, {
-    eager:true
+    eager: true,
   })
   @JoinTable()
   tags?: Tag[];

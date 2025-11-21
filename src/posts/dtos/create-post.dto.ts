@@ -74,10 +74,8 @@ export class CreatePostDto {
   content?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Serialize your JSON object else a validation error will be thrown',
-    example:
-      '{\r\n "@context": "https://schema.org",\r\n "@type": "Person"\r\n }',
+    description: 'Serialize your JSON object else a validation error will be thrown',
+    example: '{\r\n "@context": "https://schema.org",\r\n "@type": "Person"\r\n }',
   })
   @IsOptional()
   @IsJSON()
@@ -94,11 +92,11 @@ export class CreatePostDto {
 
   @ApiPropertyOptional({
     description: 'The date on which the blog post is published',
-    example: '2024-03-16T07:46:32+0000',
+    example: '2024-03-16T07:46:32.000Z',
   })
   @IsISO8601()
   @IsOptional()
-  publishOn?: Date;
+  publishOn?: string;
 
   @ApiPropertyOptional({
     description: 'Array of ids of tags',
@@ -126,7 +124,7 @@ export class CreatePostDto {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto | null;
+  metaOptions?: CreatePostMetaOptionsDto[];
 
   @ApiProperty({
     type: 'integer',
