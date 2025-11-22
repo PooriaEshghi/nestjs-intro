@@ -13,23 +13,17 @@ import { PostsService } from './providers/posts.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
+import { GetPostsDto } from './dtos/get-post.dto';
 
 @Controller('posts')
 @ApiTags('Posts')
 export class PostsController {
-  constructor(
-    /*
-     *  Injecting Posts Service
-     */
-    private readonly postsService: PostsService,
-  ) {}
+  constructor(private readonly postsService: PostsService) {}
 
-  /*
-   * GET localhost:3000/posts/:userId
-   */
   @Get('/:userId?')
-  public getPosts(@Param('userId') userId: string) {
-    return this.postsService.findAll(userId);
+  public getPosts(@Param('userId') userId: string, @Query() postQuery: GetPostsDto) {
+    console.log(postQuery)
+    return this.postsService.findAll(postQuery, userId);
   }
 
   @ApiOperation({

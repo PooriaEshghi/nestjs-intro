@@ -10,13 +10,17 @@ import {
   IsString,
   IsUrl,
   Matches,
+  Max,
   MaxLength,
   Min,
   MinLength,
   ValidateNested,
+  isNotEmpty,
 } from 'class-validator';
 
 import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
+import { CreateTagDto } from 'src/tags/dtos/create-tag.dto';
+import { DeepPartial } from 'typeorm';
 import { Type } from 'class-transformer';
 import { postStatus } from '../enums/postStatus.enum';
 import { postType } from '../enums/postType.enum';
@@ -46,12 +50,11 @@ export class CreatePostDto {
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(256)
-  @MinLength(4)
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message:
       'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
   })
+  @MaxLength(256)
   slug: string;
 
   @ApiProperty({
@@ -71,10 +74,8 @@ export class CreatePostDto {
   content?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Serialize your JSON object else a validation error will be thrown',
-    example:
-      '{\r\n "@context": "https://schema.org",\r\n "@type": "Person"\r\n }',
+    description: 'Serialize your JSON object else a validation error will be thrown',
+    example: '{\r\n "@context": "https://schema.org",\r\n "@type": "Person"\r\n }',
   })
   @IsOptional()
   @IsJSON()
@@ -85,35 +86,45 @@ export class CreatePostDto {
     example: 'http://localhost.com/images/image1.jpg',
   })
   @IsOptional()
-  @MinLength(4)
-  @MaxLength(1024)
   @IsUrl()
+  @MaxLength(1024)
   featuredImageUrl?: string;
 
   @ApiPropertyOptional({
     description: 'The date on which the blog post is published',
-    example: '2024-03-16T07:46:32+0000',
+    example: '2024-03-16T07:46:32.000Z',
   })
   @IsISO8601()
   @IsOptional()
-  publishOn?: Date;
+  publishOn?: string;
 
   @ApiPropertyOptional({
     description: 'Array of ids of tags',
-    example: [1,2],
+    example: [1, 2],
   })
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true })  
+  @IsInt({ each: true })
   tags?: number[];
 
   @ApiPropertyOptional({
-    type: () => CreatePostMetaOptionsDto,
+    type: 'object',
+    required: false,
+    items: {
+      type: 'object',
+      properties: {
+        metavalue: {
+          type: 'json',
+          description: 'The metaValue is a JSON string',
+          example: '{"sidebarEnabled": true}',
+        },
+      },
+    },
   })
   @IsOptional()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto | null;
+  metaOptions?: CreatePostMetaOptionsDto[];
 
   @ApiProperty({
     type: 'integer',
