@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "title": "What's new with NestJS",
   "postType": "post",
-  "slug": "new-with-nestjs-44",
+  "slug": "new-with-nestjs-33",
   "status": "draft",
   "content": "test content",
   "schema": "{\r\n \"@context\": \"https:\/\/schema.org\",\r\n \"@type\": \"Person\"\r\n }",
@@ -14,6 +14,6 @@ Content-Type: application/json
   "metaOptions" : {
     "metaValue": "{ \"sidebarEnabled\": true, \"footerActive\": true }"
     },
-  "authorId": 10,
-  "tags": [13]
+  "authorId": 12,
+  "tags": [10,13,14]
 }

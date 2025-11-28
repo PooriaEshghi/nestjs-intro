@@ -64,26 +64,16 @@ public async create(dto: CreatePostDto) {
     return saved;
   }
 
-<<<<<<< HEAD
-    public async findAll(userId: string) {
-    // find all posts
-    let posts = await this.postsRepository.find({
-      relations: {
-        metaOptions: true,
-        author: true,
-        // tags: true,
-=======
-  public async findAll(postQuery: GetPostsDto, userId: string): Promise<Paginated<Post>> {
-    let posts = this.paginationProvider.paginatedQuery(
-      {
-        limit: postQuery.limit,
-        page: postQuery.page
->>>>>>> b246555afe32b2278f2b7e7571dd6189a71a84cd
-      },
-      this.postsRepository
-    );
-    return posts
-  }
+public async findAll(postQuery: GetPostsDto, userId: string): Promise<Paginated<Post>> {
+  const posts = await this.paginationProvider.paginatedQuery(
+    {
+      limit: postQuery.limit,
+      page: postQuery.page,
+    },
+    this.postsRepository
+  );
+  return posts;
+}
 
   public async update(dto: PatchPostDto) {
     const existing = await this.postsRepository.findOne({
