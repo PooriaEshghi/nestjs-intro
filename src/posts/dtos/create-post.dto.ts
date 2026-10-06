@@ -108,8 +108,7 @@ export class CreatePostDto {
   tags?: number[];
 
   @ApiPropertyOptional({
-    type: 'object',
-    required: false,
+    type: 'array',
     items: {
       type: 'object',
       properties: {
